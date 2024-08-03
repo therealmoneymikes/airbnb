@@ -1,31 +1,35 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet } from "react-native";
+import { Tabs, Link } from "expo-router";
+import { View, Text } from "react-native";
+import React, {useState, useMemo, useEffect} from "react";
+import Colors from "@/constants/Colors";
+import ExploreHeaders from "@/components/basecomponents/ExploreHeaders";
+import { Stack } from "expo-router";
+import Listings from "@/components/basecomponents/Listings";
+import listingsData from "@/assets/data/airbnb-listings.json"
+import ListingsMap from "@/components/basecomponents/ListingsMap";
+import listingsDataGeo from "@/assets/data/airbnb-listings-geo.json"
+import ListingsBottomSheet from "@/components/basecomponents/ListingsBottomSheet";
+const Layout = () => {
+  const [category, setCategory] = useState("Tiny Homes")
+  const items = useMemo(() => listingsData as any, [])
+  
 
-import EditScreenInfo from '@/components/EditScreenInfo';
-import { Text, View } from '@/components/Themed';
+  const onDataChanged = (category: string) => {
+    console.log("Changed: ", category)
+    setCategory(category)
+  }
 
-export default function TabOneScreen() {
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="app/(tabs)/index.tsx" />
+    <View style={{flex: 1, marginTop: 80}}>
+        <Stack.Screen options={{
+          header: () => <ExploreHeaders onCategoryChanged={onDataChanged} />
+        }}/>
+        {/* <Listings listings={items} category={category}/> */}
+        <ListingsMap listings={listingsDataGeo}/>
+        <ListingsBottomSheet  listings={items} category={category}/>
     </View>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
-});
+export default Layout;
